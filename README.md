@@ -9,7 +9,7 @@ Le principe est le suivant. Le (ou les joueurs), déplace ses pièces sur l’ap
 
 - Objet connecté = Pyramide + RPi
 - Télécommande = Appli tel
-- Serveur = ?
+- Serveur = Constellation
 
 Télécommande <-> serveur <-> objet connecté
 
