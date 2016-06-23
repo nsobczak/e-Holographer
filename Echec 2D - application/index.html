@@ -29,8 +29,9 @@
 
 
         // Constellation
-        var constellation = $.signalR.createConstellationConsumer(
+        constellation = $.signalR.createConstellationConsumer(
             "http://nicolas:8088", "1a6afb7aef6ed90fbf767e3a19df75267d489660", "DemoConstellation");
+        // ^ variable globale
 
         constellation.connection.stateChanged(function (change) {
             if (change.newState === $.signalR.connectionState.connected) {
@@ -45,7 +46,7 @@
 
 
         function initChess() {
-            chess.setConnectionToConstellation(constellation);         //démarre la connexion à constellation
+            chess.setConnectionToConstellation(constellation);   //démarre la connexion à constellation
             chess.useAI(document.chessCtrl1.useAI.checked);
             chess.setPromotion(document.chessCtrl1.selPromo.selectedIndex);
             chess.setFrameRate(Math.abs(Number(document.chessCtrl2.frameRateCtrl.value)) || 1000);
@@ -139,7 +140,7 @@
 
 <body onload="initChess();">
 
-    <h1 style="color: royalblue; text-decoration: underline;"> Chess Game </h1>
+    <h1 style="color: royalblue; text-decoration: underline; text-align: center;"> Chess Game 3 </h1>
 
 
 
