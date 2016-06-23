@@ -1,7 +1,9 @@
 //____________________________________________________________________________________________
 /*
 Nous sommes partis d'un jeu d'échec open source existant. Son en-tête est dans le bloc suivant.
-Nous avons ajouté les envois de message Callbacks à constellation.
+Nous avons ajouté :
+- les envois de message Callbacks à constellation.
+- des console.log()
 */
 
 //____________________________________________________________________________________________
@@ -26,6 +28,7 @@ Nous avons ajouté les envois de message Callbacks à constellation.
 //____________________________________________________________________________________________
 
 
+//est-ce qu'on ne doit pas mettre var chess = (function ( constellation ) { ?
 var chess = (function () {
     // 3d
     var oSolidBoard, bUseKeyboard = false, graphicsStatus = 0,
@@ -199,6 +202,7 @@ var chess = (function () {
 
 
     function newPGNHeader() {
+        console.log("newPGNHeader()");
         var sOpp = bAI ? "HTMLChess" : "?";
         for (var iOldKey in oGameInfo) { delete oGameInfo[iOldKey]; }
         oGameInfo.Event = "No name match";
@@ -210,8 +214,9 @@ var chess = (function () {
         oGameInfo.Result = "*";
         updatePGNHeader();
     }
-   
+
     function isThreatened(nPieceX, nPieceY, flagFromColor) {
+        //console.log("isThreatened()");
         var iMenacing, bIsThrtnd = false;
         for (var iMenaceY = 0; iMenaceY < 8; iMenaceY++) {
             for (var iMenaceX = 0; iMenaceX < 8; iMenaceX++) {
@@ -224,6 +229,7 @@ var chess = (function () {
     }
 
     function getInCheckPieces() {
+        console.log("getInCheckPieces()");
         var iExamX, iExamY, iExamPc, bNoMoreMoves = true, myKing = kings[flagWhoMoved >> 3 ^ 1];
         bCheck = isThreatened(myKing % 10 - 1, (myKing - myKing % 10) / 10 - 2, flagWhoMoved);
         etc.aThreats.splice(0);
@@ -244,9 +250,19 @@ var chess = (function () {
                 oGameInfo.Result = flagWhoMoved ? "0-1" : "1-0";
                 sendMsg((oGameInfo.hasOwnProperty(sWinner) ? oGameInfo[sWinner] : sWinner) + " wins.", "The king is threatened and can not move (<em>checkmate<\/em>).", 10000);
                 sMovesList = sMovesList.replace(/\+$/, "#");
+                console.log("MAT");
+                constellation.server.sendMessage({
+                    Scope: 'Package',
+                    Args: ['HolographerPythonPackage']
+                }, 'FinDuJeu', '');
             } else {
                 oGameInfo.Result = "1/2-1/2";
                 sendMsg("Drawn game", "The opponent can not move (<em>draw<\/em>).", 10000);
+                console.log("PAT");
+                constellation.server.sendMessage({
+                    Scope: 'Package',
+                    Args: ['HolographerPythonPackage']
+                }, 'FinDuJeu', '');
             }
             bGameNotOver = false;
         } else if (oGameInfo.hasOwnProperty("Result") && oGameInfo.Result.search(/^(\d+\-\d+)$/) > -1 && iHistPointr === aHistory.length - 1) {
@@ -257,12 +273,14 @@ var chess = (function () {
     }
 
     function getPcByParams(nParamId, nWhere) {
+        console.log("getPcByParams()");
         var nPieceId = aParams[nParamId];
         if ((nPieceId & 7) === 2) { kings[nParamId >> 3 & 1] = nWhere; }
         return (nPieceId);
     }
 
     function resetBoard() {
+        console.log("reset board => Envoi MC 'plateau de départ'");
         var iParamId = 0;
         nFrstFocus = fourBtsLastPc = nPawnStride = lastStart = lastEnd = 0; flagWhoMoved = 8; iHistPointr = -1;
         aHistory.splice(0);
@@ -271,9 +289,12 @@ var chess = (function () {
         sMovesList = new String();
         oMovesSelect.innerHTML = "<option>Game start<\/option>";
         oMovesSelect.selectedIndex = 0;
+        //constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] },
+        //    'PlateauDeDepart', '');
     }
 
     function trimHistory() {
+        console.log("trimHistory()");
         sMovesList = sMovesList.substr(0, sMovesList.search(new RegExp((iHistPointr & 1 ^ 1 ? " \\w+(\\=\\w+)?" : "¶" + String(iHistPointr + 4 >> 1) + "\\.\\s.*") + (iHistPointr === aHistory.length - 2 ? "$" : ""))));
         aHistory.splice(iHistPointr + 1);
         oGameInfo.Result = "*";
@@ -286,6 +307,7 @@ var chess = (function () {
 	*		[bits 25 to 29]		[bits 20 to 24]		[bits 15 to 19]		[bits 8 to 14]		[bits 1 to 7]
 	*/
     function writeHistory(bGraphRendrng, nStartPt, nEndPt, nPieceId, nTarget, nPromo) {
+        console.log("writeHistory()");
         var nMoves = aHistory.length >> 1, sPromoAlg = new String(), nEndPosX = nEndPt % 10 - 1, nEndPosY = (nEndPt - nEndPt % 10) / 10 - 2, nStartPosX = nStartPt % 10 - 1, nStartPosY = (nStartPt - nStartPt % 10) / 10 - 2, iVerifyX, iVerifyY, disambiguateX = false, disambiguateY = false, signedNumber = nStartPt | nEndPt << 7 | nPieceId << 14 | nTarget << 19, vPromo = false, bWriteCapture = ((nPieceId & 7) === 1 && (nStartPt + nEndPt & 1) && nTarget === 0 /* en passant */) || nTarget > 0, colorFlag = nPieceId & 8;
         lastStart = nStartPt;
         lastEnd = nEndPt;
@@ -393,6 +415,7 @@ var chess = (function () {
     // End Toledo Chess Engine
 
     function engineMove() {
+        console.log("engineMove()");
         consider(0, 0, 0, 21, nPawnStride, nPlyDepth);
         consider(0, 0, 0, 21, nPawnStride, 1);
         if (etc.bFlatView) { writeFlatPieces(); }
@@ -401,6 +424,7 @@ var chess = (function () {
 
     // Flat chessboard functions
     function writeFlatPieces() {
+        console.log("writeFlatPieces() + MC MAJ Plateau");
         var sSqrContent, oSquareCell, nSquareId, nMenacedSq, nConst;
         for (var iCell = 0; iCell < 64; iCell++) {
             nSquareId = (iCell >> 3) * 10 - (iCell & 7) + 28;
@@ -416,34 +440,35 @@ var chess = (function () {
             }
         }
         nFrstFocus = 0;
+        constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] },
+            'PlateauSuivant', '');
     }
 
     function squareFocus(nPieceId, bMakeActive) {
+        console.log("squareFocus()");
         var oSelCell = aFlatSquares[etc.bBlackSide ? ((nPieceId - nPieceId % 10) / 10 - 1 << 3) - nPieceId % 10 : (9 - (nPieceId - nPieceId % 10) / 10 << 3) - 1 + nPieceId % 10];
         if (bMakeActive) { sLstSqColr = oSelCell.style.backgroundColor; }
         oSelCell.style.backgroundColor = bMakeActive ? "#4cff4c" : sLstSqColr;
     }
 
     function createFlatCoord(nNewHeaderId, bVertOri) {
+        console.log("createFlatCoord()");
         var oNewCoord = document.createElement("th");
         oNewCoord.className = bVertOri ? "vertCoords" : "horizCoords";
         oNewCoord.innerHTML = bVertOri ? nNewHeaderId : String.fromCharCode(97 + nNewHeaderId);
-        console.log("createFlatCoord");
         return (oNewCoord);
     }
 
     function updateFlatCoords() {
+        console.log("updateFlatCoords()");
         for (var iCoord = 0; iCoord < 8; iCoord++) {
             aCoords[iCoord].innerHTML = aCoords[iCoord | 16].innerHTML = String.fromCharCode(etc.bBlackSide ? 104 - iCoord : 97 + iCoord);
             aCoords[iCoord | 8].innerHTML = aCoords[iCoord | 24].innerHTML = String(etc.bBlackSide ? iCoord + 1 : 8 - iCoord);
         }
-        console.log("updateFlatCoords");
-        //serveurConstellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] },
-        //    'PlateauSuivant', '');
     }
 
     function showFlatBoard() {
-        console.log("showFlatBoard");
+        console.log("showFlatBoard()");
         if (oBoardTable) {
             // flat chessboard will be updated
             updateFlatCoords();
@@ -511,6 +536,7 @@ var chess = (function () {
 
     // Solid chessboard functions
     function runComponents() {
+        console.log("runComponents()");
         graphicsStatus++;
         if (graphicsStatus === 15) {
             try {
@@ -528,12 +554,14 @@ var chess = (function () {
     }
 
     function loadCom(nIndex) {
+        console.log("loadCom()");
         if (graphicsStatus === 0) { return; }
         etc.aFncBodies[nIndex] = this.responseText;
         runComponents();
     }
 
     function showSolidBoard() {
+        console.log("showSolidBoard()");
         if (graphicsStatus === 0) {
             graphicsStatus = 1;
             etc.oCurtain = document.createElement("div");
@@ -566,13 +594,18 @@ var chess = (function () {
     }
 
     function updatePGNHeader() {
+        console.log("updatePGNHeader()");
         sPGNHeader = new String();
         for (var iHeadKey in oGameInfo) { sPGNHeader += "[" + iHeadKey + " \"" + oGameInfo[iHeadKey] + "\"]\n"; }
     }
 
-    function updatePGNLink() { oPGNBtn.setAttribute("href", "data:application/x-chess-pgn;US-ASCII," + escape(sPGNHeader + "\n" + sMovesList.replace(/¶/g, " ") + (aHistory.length > 0 ? " " : "") + oGameInfo.Result)); }
+    function updatePGNLink() {
+        console.log("updatePGNLink()");
+        oPGNBtn.setAttribute("href", "data:application/x-chess-pgn;US-ASCII," + escape(sPGNHeader + "\n" + sMovesList.replace(/¶/g, " ") + (aHistory.length > 0 ? " " : "") + oGameInfo.Result));
+    }
 
     function runAlgebraic(sAlgMove, nColorFlag, bGraphRendrng) {
+        console.log("runAlgebraic()");
         try {
             var nAlgStartSq = 0, nAlgEndSq, nAlgPromo, nAlgPiece, nAlgTarget;
             if (sAlgMove === "O-O" || sAlgMove === "O-O-O") {
@@ -660,6 +693,7 @@ var chess = (function () {
     }
 
     function readHistory(nRelPt, bSynchrList) {
+        console.log("readHistory()");
         var iSigned, nExprs1, nExprs2, iHistPiece, iHistTarg, iHistPromo, bitBackward = 0, nMvsDiff = Math.abs(nRelPt), iHistPts = [null, null];
         if (nRelPt < 0) { bitBackward = 1; }
         nFrstFocus = nScndFocus = 0;
@@ -707,6 +741,7 @@ var chess = (function () {
     }
 
     function histClearIter() {
+        console.log("histClearIter()");
         if (!bMotion) { return; }
         window.clearInterval(nMotionId);
         oMovesSelect.disabled = bMotion = false;
@@ -714,6 +749,7 @@ var chess = (function () {
     }
 
     function sendAlgebraic(sMove) {
+        console.log("sendAlgebraic()");
         if (!bReady) { return (false); }
         if (iHistPointr + 1 < aHistory.length) {
             if (confirm("Moving now all subsequent moves will be lost. Do you want try to move?")) { trimHistory(); } else { return (false); }
@@ -960,10 +996,11 @@ var chess = (function () {
     return {
         setConnectionToConstellation: function (serveurConstellation) {
             //Fonction qui initialise la connexion au serveur constellation
-            console.log("entering initConnectionToConstellation()");
+            console.log("setConnectionToConstellation()");
             serveurConstellation.connection.start();        // On peut lancer la connection à différents endroits, ça fonctionnne
-            },
+        },
         help: function () {
+            console.log("help()");
             if (!bReady) { return; }
             engineMove();
             bReady = false;
@@ -971,6 +1008,7 @@ var chess = (function () {
             if (etc.bFlatView && nFrstFocus) { squareFocus(nFrstFocus, false); }
         },
         organize: function (bHB) {
+            console.log("organize()");
             resetBoard();
             flagHumanBlack = bHB ? 8 : 0;
             newPGNHeader();
@@ -982,6 +1020,7 @@ var chess = (function () {
             if (bHB && bAI) { bReady = false; window.setTimeout(engineMove, 250); }
         },
         place: function (oWhere) {
+            console.log("place()");
             if (oBoardsBox) { oBoardsBox.parentNode.removeChild(oBoardsBox); }
             else {
                 var oSizeHandle = document.createElement("div"), oCtrlPanel = document.createElement("div"), oMnMxCtrl = document.createElement("div"), oAlgBox = document.createElement("input"), oMovesPar = document.createElement("p"), oPGNPar = document.createElement("p"), oInfoBtn = document.createElement("span");
@@ -1035,6 +1074,7 @@ var chess = (function () {
             this.organize(false);
         },
         setView: function (nView) {
+            console.log("setView()");
             if (!bReady) { return (false); }
             var bUpdateSize = false, bShow2D = Boolean(nView & 1), bShow3D = Boolean(nView & 2), bChanged2D = Boolean(nView & 1 ^ etc.bFlatView);
             if (bShow2D && bShow3D && nDeskWidth < nMinHeight << 1) {
@@ -1058,6 +1098,7 @@ var chess = (function () {
             return (true);
         },
         showHide2D: function () {
+            console.log("showHide2D()");
             if (!bReady) { return (false); }
             if (etc.bFlatView) {
                 etc.oFlatVwArea.style.width = "0";
@@ -1075,6 +1116,7 @@ var chess = (function () {
             return (true);
         },
         showHide3D: function () {
+            console.log("showHide3D()");
             if (!bReady) { return (false); }
             if (etc.bSolidView) {
                 oSolidBoard.hide();
@@ -1088,18 +1130,35 @@ var chess = (function () {
             }
             return (true);
         },
-        lock: function () { if (bMotion) { bBoundLock = false; } else { bReady = false; } },
-        unlock: function () { histClearIter(); bReady = true; },
-        useAI: function (bMachine) { bAI = bMachine; },
-        placeById: function (sNodeId) { this.place(document.getElementById(sNodeId)); },
+        lock: function () {
+            console.log("lock()");
+            if (bMotion) { bBoundLock = false; } else { bReady = false; }
+        },
+        unlock: function () {
+            console.log("unlock()");
+            histClearIter(); bReady = true;
+        },
+        useAI: function (bMachine) {
+            console.log("useAI()");
+            bAI = bMachine;
+        },
+        placeById: function (sNodeId) {
+            console.log("placeById()");
+            this.place(document.getElementById(sNodeId));
+        },
         setPlyDepth: function (nLevel) {
+            console.log("setPlyDepth()");
             var nDepth = new Number(nLevel);
             if (isNaN(nDepth) || nDepth < 0) { return (false); }
             nPlyDepth = nDepth + 2;
             return (true);
         },
-        setPromotion: function (nPromotion) { etc.nPromotion = nPromotion & 3; },
+        setPromotion: function (nPromotion) {
+            console.log("setPromotion()");
+            etc.nPromotion = nPromotion & 3;
+        },
         navigate: function (nHowMany, bIterate, nTmpSpeed) {
+            console.log("navigate()");
             var nMoveFor = Number(nHowMany), bBackward = nMoveFor < 0, nHistLen1 = aHistory.length;
             if (bMotion || nMoveFor === 0 || nHistLen1 === 0) { return; }
             if (bIterate) {
@@ -1128,10 +1187,12 @@ var chess = (function () {
         },
         stopMotion: histClearIter,
         backToStart: function () {
+            console.log("backToStart()");
             if (bMotion || iHistPointr === -1) { return; }
             readHistory(~iHistPointr, true);
         },
         returnToEnd: function () {
+            console.log("returnToEnd()");
             var nHistLen3 = aHistory.length;
             if (bMotion || iHistPointr === nHistLen3 - 1) { return; }
             readHistory(nHistLen3 - iHistPointr - 1, true);
@@ -1139,6 +1200,7 @@ var chess = (function () {
         // it's for developpers only: do not uncomment this function, please!
         // runInside: function(sJSCode) { eval(sJSCode); },
         readPGN: function (sPGNBody, bHumanBlack) {
+            console.log("readPGN()");
             var iInfoField, iAlgMoves, cleanPGN = sPGNBody.replace(/\{.*\}/g, "").replace(/\s*;[^\n]\s*|\s+/g, " "), sFieldFence = "\\[[^\\]]*\\]", aFlatHeadr = cleanPGN.match(new RegExp(sFieldFence, "g")), aMovesLoaded = cleanPGN.replace(new RegExp("^\\s*(" + sFieldFence + "\\s*)*(\\d+\\.\\s*)?|\\+|\\s*((#|(\\d+(\/\\d+)?\\-\\d+(\/\\d+)?)|\\*).*)?$", "g"), "").split(/\s+\d+\.\s*/);
             resetBoard();
             for (var iOldKey in oGameInfo) { delete oGameInfo[iOldKey]; }
@@ -1164,16 +1226,24 @@ var chess = (function () {
             if (bAI && bGameNotOver && flagWhoMoved === flagHumanBlack) { bReady = false; window.setTimeout(engineMove, 250); }
         },
         readAlgebraic: sendAlgebraic,
-        setFrameRate: function (nMilliseconds) { nFrameRate = nMilliseconds; },
+        setFrameRate: function (nMilliseconds) {
+            console.log("setFrameRate()");
+            nFrameRate = nMilliseconds;
+        },
         setDimensions: function (nNewWidth, nNewHeight) {
+            console.log("setDimensions()");
             nDeskWidth = nNewWidth < nMinWidth ? nMinWidth : nDeskWidth = nNewWidth - 1 | 1;
             nDeskHeight = etc.i3DHeight = nNewHeight < nMinHeight ? nMinHeight : nNewHeight - 1 | 1;
             updateViewSize(etc.bSolidView, true);
             oBoardsBox.style.width = nDeskWidth + "px";
             oBoardsBox.style.height = nDeskHeight + "px";
         },
-        getDimensions: function () { return [nDeskWidth, nDeskHeight]; },
+        getDimensions: function () {
+            console.log("getDimensions()");
+            return [nDeskWidth, nDeskHeight];
+        },
         setSide: function (nSide) { // 0: white side, 1: black side, 2: human side.
+            console.log("setSide()");
             var bWasBlack = etc.bBlackSide;
             bHumanSide = Boolean(nSide >> 1);
             if (bHumanSide) { etc.bBlackSide = Boolean(flagHumanBlack) }
@@ -1183,7 +1253,10 @@ var chess = (function () {
                 if (etc.bSolidView) { oSolidBoard.updateView(); }
             }
         },
-        useKeyboard: function (bActive) { etc.bKeyCtrl = bUseKeyboard = bActive; }
+        useKeyboard: function (bActive) {
+            console.log("useKeyboard()");
+            etc.bKeyCtrl = bUseKeyboard = bActive;
+        }
     };
 
 })(),
