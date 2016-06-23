@@ -8,7 +8,7 @@
     <script type="text/javascript" src="scripts/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.signalR-2.2.0.min.js"></script>
     <script type="text/javascript" src="scripts/Constellation-1.8.0.js"></script>
-    <!--Pour le jeu d'échec-->
+    <!--Pour le jeu d'Ã©chec-->
     <script type="text/ecmascript" src="scripts/xhr.js"></script>
     <script type="text/ecmascript" src="scripts/chess.js"></script>
     <link type="text/css" rel="stylesheet" href="scripts/chess.css" />
@@ -30,7 +30,7 @@
 
         // Constellation
         constellation = $.signalR.createConstellationConsumer(
-            "http://nicolas:8088", "1a6afb7aef6ed90fbf767e3a19df75267d489660", "DemoConstellation");
+            "<URI_du_serveur_constellation>", "<clÃ©_standard_du_serveur>", "<Friendly_Name>");
         // ^ variable globale
 
         constellation.connection.stateChanged(function (change) {
@@ -46,7 +46,7 @@
 
 
         function initChess() {
-            chess.setConnectionToConstellation(constellation);   //démarre la connexion à constellation
+            chess.setConnectionToConstellation(constellation);   //dÃ©marre la connexion Ã  constellation
             chess.useAI(document.chessCtrl1.useAI.checked);
             chess.setPromotion(document.chessCtrl1.selPromo.selectedIndex);
             chess.setFrameRate(Math.abs(Number(document.chessCtrl2.frameRateCtrl.value)) || 1000);
@@ -145,11 +145,11 @@
 
 
     <!--Constellation-->
-    <p> <b>Etat :</b> <span id="state">Non connecte</span> à <i>constellation</i> </p>
+    <p> <b>Etat :</b> <span id="state">Non connecte</span> Ã  <i>constellation</i> </p>
 
 
 
-    <!--En-tête-->
+    <!--En-tÃªte-->
     <form name="chessCtrl1" onsubmit="return(false);">
 
         <p style="text-align:center;">[&nbsp;<input id="useAIAsk" name="useAI" type="checkbox" onclick="chess.useAI(this.checked);" checked /> <label for="useAIAsk">Against machine</label> | Promotion to: <select onchange="chess.setPromotion(this.selectedIndex);" name="selPromo"><option>Queen</option><option>Rook</option><option>Bishop</option><option>Knight</option></select> | <input type="button" name="strtBtn" value="New game" onclick="chess.organize(this.form.plyerClr1[1].checked);" /> (Human: <input type="radio" name="plyerClr1" id="white1" checked /> <label for="white1">white</label> <input type="radio" name="plyerClr1" id="black1" /> <label for="black1">black</label>) | Machine meditation level (press return to save): <input type="text" name="plyDepthCtrl" value="0" size="2" onkeypress=";if(event.keyCode===13&&chess.setPlyDepth(this.value)){alert('Ply depth setted.' + (Number(this.value) > 2 ? '\nAttention! The game could be very slow.' : ' Good game :)'));}" />&nbsp;]</p>
@@ -172,7 +172,7 @@
 
 
 
-    <!--Jeu d'échec = carré central-->
+    <!--Jeu d'Ã©chec = carrÃ© central-->
     <div id="chessDesk"></div>
 
 
