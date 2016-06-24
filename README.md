@@ -1,4 +1,4 @@
-# Pyramide-hologramme-connectee
+# e-Holographer
 
 ## Présentation
 
