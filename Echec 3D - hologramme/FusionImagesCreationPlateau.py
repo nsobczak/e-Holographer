@@ -141,7 +141,7 @@ def trieListeImageAFusionnerSelonOrientation(listeImageAFusionner, orientation):
 	#On commence le trie	
 	print("on tourne pour ", orientation)
 	listeTriee = []
-	i = 1 + (7 * (indiceOrientation % 2)) #8 quand indice est impaire et 1 sinon
+	i = 1 + (7 * (indiceOrientation % 2)) # 8 quand indice est impaire {front et left} et 1 sinon {back et right}
 	print("soit un départ pour i = ", i)
 	compteur = 1
 	while (compteur < 9):
@@ -149,18 +149,18 @@ def trieListeImageAFusionnerSelonOrientation(listeImageAFusionner, orientation):
 		k = 0
 		while (k < len(listeImageAFusionner)):
 			nomImage = listeImageAFusionner[k]
-			#On traite ensemble les cas {front et left} et les cas {right et back}
+			#On traite ensemble les cas {front et back}
 			if (indiceOrientation < 2):
 				if ((orientation in nomImage) and (str(i) in nomImage)):
 					listeTriee += [nomImage]
 					print("on modifie bien i et on rentre même dans le if indiceorientation qui va bien", i)
-			#On traite ensemble les cas {front et left} et les cas {right et back}
+			#On traite ensemble les cas {left et right}
 			else :
 				if ((orientation in nomImage) and (listeColonnes[i - 1] in nomImage)):
 					listeTriee += [nomImage]
 					print("on modifie bien i et on rentre même dans le if indiceorientation qui va bien", listeColonnes[i - 1])
 			k += 1
-		i += (-1)**indiceOrientation  #-1 quand indice est impaire et +1 sinon
+		i += (-1)**indiceOrientation  # -1 quand indice est impaire {front et left} et +1 sinon {back et right}
 		compteur += 1
 		print("compteur", compteur -1, "et i = ", i)
 
