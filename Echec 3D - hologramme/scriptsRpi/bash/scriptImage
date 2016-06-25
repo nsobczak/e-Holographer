@@ -1,5 +1,0 @@
-#script permettant d'afficher une image en plein écran
-nohup eog -f /home/pi/Pictures/garcia >/home/pi/Desktop/scriptsRpi/bash/logImage &
-
-#permet d'afficher l'ID du processus dans le fichier txt "/home/pi/Desktop/scriptsRpi/bash/IdImage"
-echo $! >/home/pi/Desktop/scriptsRpi/bash/IdImage &
