@@ -2,8 +2,10 @@
 /*
 Nous sommes partis d'un jeu d'échec open source existant. Son en-tête est dans le bloc suivant.
 Nous avons ajouté :
-- les envois de message Callbacks à constellation.
-- des console.log()
+- la connexion à constellation
+- les envois de message Callbacks à constellation
+- des console.log() à quasiment toutes les fonctions pour repérer leur utilisation
+Pour retrouver les modifications, rechercher "constellation"
 */
 
 //____________________________________________________________________________________________
@@ -347,6 +349,30 @@ var chess = (function () {
     }
 
     // Toledo Chess Engine (see http://nanochess.110mb.com/)
+
+    // Chessboard structure (array "board"):
+    //      0  1  2  3  4  5  6  7  8  9
+    //  00 -- -- -- -- -- -- -- -- -- --
+    //  10 -- -- -- -- -- -- -- -- -- --
+    //  20 -- A8 B8 C8 D8 E8 F8 G8 H8 --
+    //  30 -- A7 B7 C7 D7 E7 F7 G7 H7 --
+    //  40 -- A6 B6 C6 D6 E6 F6 G6 H6 --
+    //  50 -- A5 B5 C5 D5 E5 F5 G5 H5 --
+    //  60 -- A4 B4 C4 D4 E4 F4 G4 H4 --
+    //  70 -- A3 B3 C3 D3 E3 F3 G3 H3 --
+    //  80 -- A2 B2 C2 D2 E2 F2 G2 H2 --
+    //  90 -- A1 B1 C1 D1 E1 F1 G1 H1 --
+    // 100 -- -- -- -- -- -- -- -- -- --
+    // 110 -- -- -- -- -- -- -- -- -- --
+    //
+    // Piece codes:
+    //   1 - pawn      4 - bishop
+    //   2 - king      5 - rook
+    //   3 - knight    6 - queen
+    //
+    // White pieces or'ed with 0x08, pieces that wasn't moved or'ed with 0x10.
+    // So, for example, white king has code 0x1A and after it's first move becomes 0x0A.
+    // Area outside of the chessboard filled with 0x07, empty cells contain 0x00.
     var fourBtsLastPc, flagWhoMoved, nPawnStride, nFrstFocus, nScndFocus, nPlyDepth = 2, iSquare = 120, thnkU = [53, 47, 61, 51, 47, 47], aParams = [5, 3, 4, 6, 2, 4, 3, 5, 1, 1, 1, 1, 1, 1, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 13, 11, 12, 14, 10, 12, 11, 13, 0, 99, 0, 306, 297, 495, 846, -1, 0, 1, 2, 2, 1, 0, -1, -1, 1, -10, 10, -11, -9, 9, 11, 10, 20, -9, -11, -10, -20, -21, -19, -12, -8, 8, 12, 19, 21];
     function consider(thnkA, thnkB, thnkH, thnkF, thnkPawnStride, thnkDepth) {
         var iThnkPiece, thnkSigndPiece, thnkPiece, thnkL, thnkE, thnkD, thnkStartPt = thnkF, thnkN = -1e8, thnkK = 78 - thnkH << 10, thnkEndPt, thnkG, thnkM, thnkY, thnkQ, thnkTarget, thnkC, thnkJ, thnkZ = flagWhoMoved ? -10 : 10;
@@ -427,11 +453,22 @@ var chess = (function () {
         console.log("writeFlatPieces() + MC MAJ Plateau");
         var sSqrContent, oSquareCell, nSquareId, nMenacedSq, nConst;
         for (var iCell = 0; iCell < 64; iCell++) {
-            nSquareId = (iCell >> 3) * 10 - (iCell & 7) + 28;
+            //console.log("1er for - icell :", iCell);
+            nSquareId = (iCell >> 3) * 10 - (iCell & 7) + 28;   //Division par 8 (lignes)
+            //console.log("1er for - nSquareId :", nSquareId);
             oSquareCell = aFlatSquares[etc.bBlackSide ? iCell : 63 - iCell];
+            //console.log("1er for - oSquareCell :", oSquareCell);
             sSqrContent = etc.aBoard[nSquareId]; oSquareCell.innerHTML = sSqrContent === 0 ? "" : "<span>&#98" + "171216151413231822212019".substr((((sSqrContent & 15) * 3 + (sSqrContent & 7)) >> 1) - 2, 2) + ";<\/span>";
-            if (nSquareId === lastStart || nSquareId === lastEnd) { oSquareCell.style.backgroundColor = (nSquareId * 11 - nSquareId % 10) / 10 & 1 ? "#c0a1a1" : "#e8c9c9"; } else { oSquareCell.style.backgroundColor = ""; }
+            if (nSquareId === lastStart || nSquareId === lastEnd) {
+                oSquareCell.style.backgroundColor = (nSquareId * 11 - nSquareId % 10) / 10 & 1 ? "#c0a1a1" : "#e8c9c9";
+                //console.log("1er for - if (nSquareId, lastStart, lastEnd) :", nSquareId, lastStart, lastEnd);
+            } else {
+                oSquareCell.style.backgroundColor = "";
+                //console.log("1er for - else :");
+            }
         }
+        console.log("lastStart = case de départ :", lastStart, " | lastEnd = case d'arrivée", lastEnd);
+
         if (!bAI || flagHumanBlack !== flagWhoMoved) {
             for (var iThreat = 0; iThreat < etc.aThreats.length; iThreat++) {
                 nMenacedSq = etc.aThreats[iThreat];
@@ -440,8 +477,10 @@ var chess = (function () {
             }
         }
         nFrstFocus = 0;
-        constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] },
-            'PlateauSuivant', '');
+
+        //envoi du message callback
+        constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] }, 'MAJPlateau',
+            [ lastStart, lastEnd ]);
     }
 
     function squareFocus(nPieceId, bMakeActive) {
