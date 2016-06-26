@@ -22,7 +22,7 @@ import os
 
 #%%____________________________________________________________________________
 # Placement dans le répertoire
-os.chdir("<Chemin_vers_le_bon_repertoire_a_inserer_ici>") # != sous windows et sous linux
+os.chdir("C:\\Users\\Nicolas\\Documents\\Ecole\\ISEN\\NF - informatique\\Projet_fin_d'annee\\e-Holographer\\Echec 3D - hologramme\\Captures\\RendusPieces") # != sous windows et sous linux   #<Chemin_vers_le_bon_repertoire_a_inserer_ici>
 
 
 
@@ -323,7 +323,7 @@ def initialisationOuMAJImagesPlateau(nomImage, listeImagesOld, caseDepart, caseA
     
     #On commence par creer les images du plateau initial si il n'y a pas encore eu de liste d'images
     if (listeImagesOld == []) :
-        listeImagesNew = ["WhiteRookA1", "WhiteKnightB1", "WhiteBishopC1", "WhiteQueenD1", "WhiteKingE1", "WhiteBishopF1", "WhiteKnightG1", "WhiteRookH1", "WhitePawnA2", "WhitePawnB2", "WhitePawnC2", "WhitePawnD2", "WhitePawnE2", "WhitePawnF2", "WhitePawnG2", "WhitePawnH2", "BlackRookA8", "BlackKnightB8", "BlackBishopC8", "BlackQueenD8", "BlackKingE8", "BlackBishopF8", "BlackKnightG8", "BlackRookH8", "BlackPawnA7", "BlackPawnB7", "BlackPawnC7", "BlackPawnD7", "BlackPawnE7", "BlackPawnF7", "BlackPawnG7", "BlackPawnH7"]
+        listeImagesNew = ["WhiteRookA1", "WhiteKnightB1", "WhiteBishopC1", "WhiteQueenD1", "WhiteKingE1", "WhiteBishopF1", "WhiteKnightG1", "WhiteRookH1", "WhitePawnA2", "WhitePawnB2", "WhitePawnC2", "WhitePawnD2", "WhitePawnE2", "WhitePawnF2", "WhitePawnG2", "WhitePawnH2", "BlackRookA8", "BlackKnightB8", "BlackBishopC8", "BlackBishopD8", "BlackKingE8", "BlackBishopF8", "BlackKnightG8", "BlackRookH8"]#, "BlackPawnA7", "BlackPawnB7", "BlackPawnC7", "BlackPawnD7", "BlackPawnE7", "BlackPawnF7", "BlackPawnG7", "BlackPawnH7"]
     
     #Sinon s'il il n'y a pas de modification on retourne simplement la liste des images pour eviter de perdre du temps à recalculer le plateau  
     elif (caseDepart == 0 or caseArrivee == 0) : 
@@ -336,11 +336,11 @@ def initialisationOuMAJImagesPlateau(nomImage, listeImagesOld, caseDepart, caseA
     #On renomme toutes les images avec l'orientation en debut
     listeImagesAFusionner = []
     listeImagesAFusionnerTriee = []
-    nombreImages = len(listeImages)
+    nombreImages = len(listeImagesNew)
     for i in range(4):
         orientation = listeOrientations[i]
         for j in range(nombreImages):
-            listeImagesAFusionner += [orientation + listeImages[j] + ".png"] #produit le nom del'image sous la forme "frontWhiteRookA1.png" et l'insere dans la liste
+            listeImagesAFusionner += [orientation + listeImagesNew[j] + ".png"] #produit le nom del'image sous la forme "frontWhiteRookA1.png" et l'insere dans la liste
         listeImagesAFusionnerTriee += trieListeImageAFusionnerSelonOrientation(listeImagesAFusionner[nombreImages*i : (nombreImages*(i+1))], orientation)
         imageFusionnee = superposePlusieursImages(listeImagesAFusionnerTriee[nombreImages*i : (nombreImages*(i+1))], orientation)
         plt.imsave(orientation+nomImage+".png",imageFusionnee)
@@ -401,7 +401,7 @@ def regroupe4ImagesEn1(nomImage):
                 elif ( (lignes + colonnes <= i < dimension) and (lignes <= j < lignes + colonnes) ) :
                     base[i][j] = front[i - lignes - colonnes][j - lignes][0:3]
                     #print("pixel position : i = ",i," et j = ",j)
-        plt.imsave('imageAProjeter.png',base)
+        plt.imsave('imageAProjeter'+nomImage+'.png', base)
         return(base)        
     #si les dimensions ne sont pas bonnes
     return("erreur : les images doivent avoir les memes dimentions")    
@@ -436,14 +436,16 @@ def creePlateauHolographique(nomImage, listeImagesOld, caseDepart, caseArrivee):
 #%%____________________________________________________________________________
 # Tests des fonctions
 
-# listeImagesAFusionnerTest0 = ["frontWhitePawnD2.png", "frontWhitePawnD2.png", "frontWhitePawnD2.png", "frontWhitePawnD2.png", "frontWhitePawnD2.png", "frontWhitePawnD2.png", "frontWhitePawnD2.png",  "backWhitePawnE2.png", "frontWhitePawnE2.png", "frontWhiteQueenD1.png"]
-# orientation = "front"
+listeImagesAFusionnerTest0 = ["frontWhiteQueenD6.png", "frontWhiteKingF2.png", "frontBlackKnightG3.png", "frontWhiteRookD6.png", "frontWhiteRookE8.png", "frontWhiteBishopA1.png", "frontBlackBishopC5.png",  "backWhitePawnE7.png", "frontWhitePawnC6.png", "frontBlackKnightH5.png"]
+#orientation = "front"
 #plt.imshow(superposePlusieursImages(listeImagesAFusionner, orientation))
-# listeImagesAFusionnerTest1 = imagesPlateauInitial()
+#listeImagesAFusionnerTest1 = imagesPlateauInitial("PlateauInitial")
 # imageHolo = creeImageHolographique('WhiteQueenD1')
 # plt.imshow(imageHolo)
-#listeImagesAFusionner, imageHolographique = creePlateauHolographique('_2_Test')
+#listeImagesAFusionner = creePlateauHolographique('_2_Test', listeImagesAFusionnerTest0, 21, 31)
 
+listeImagesInit = creePlateauHolographique('_01_Test',[],0,0)
+listeImagesNew = creePlateauHolographique('_02_Test',listeImagesInit,21,41)
 
 """
 #%%=============================================================================
