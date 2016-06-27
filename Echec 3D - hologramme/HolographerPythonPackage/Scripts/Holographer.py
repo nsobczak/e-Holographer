@@ -101,14 +101,3 @@ Constellation.Start(OnStart);
 
 
 #%%____________________________________________________________________________________
-"""	Pour se connecter au serveur Sylvain
-id : Feitte
-cle standard : Coucou
-cle admin : Bernard
-"""
-"""	Pour se connecter au serveur Vincent
-id admin : Rey
-cle admin : Vinc
-id standard : Vinc
-cle standard : Rey
-"""
