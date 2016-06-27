@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        
+
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+        <!--Pour constellation-->
+        <script type="text/javascript" src="scripts/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery.signalR-2.2.0.min.js"></script>
+        <script type="text/javascript" src="scripts/Constellation-1.8.0.js"></script>
+        <!--Pour le jeu d'échec-->
+        <script type="text/ecmascript" src="scripts/xhr.js"></script>
+        <script type="text/ecmascript" src="scripts/index.js"></script>
+        <script type="text/ecmascript" src="scripts/chess.js"></script>
+
+        <link type="text/css" rel="stylesheet" href="scripts/chess.css" />
+        <link type="text/css" rel="stylesheet" href="scripts/gnomechess.css" />
+        
+    
+        <title>2D Javascript Chess</title>
+
+        <!--====== Javascript ======-->
+        <script type="text/javascript">
+
+        var nVwPressed = false;
+
+        function pressVwBtn(nBtnId) {
+            if (nVwPressed) { document.getElementById("viewBtn" + nVwPressed).className = ""; }
+            document.getElementById("viewBtn" + nBtnId).className = "pressedBtn";
+            nVwPressed = nBtnId;
+        }
+
+
+        // Constellation
+        constellation = $.signalR.createConstellationConsumer("http://ISENMIC-0NJ2PQV:8088", "0fdb5cd27d724996b7dfe3268baa6c7105e23f51", "TestCordovaConstellation");
+        // ^ variable globale
+
+        constellation.connection.stateChanged(function (change) {
+            if (change.newState === $.signalR.connectionState.connected) {
+                $("#state").text("Connecte");
+                constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] },
+                    'InfosConnection', '');
+            }
+            else {
+                $("#state").text("Non connecte");
+            }
+        });
+
+
+        function initChess() {
+            chess.setConnectionToConstellation(constellation);   //démarre la connexion à constellation
+            chess.useAI(document.chessCtrl1.useAI.checked);
+            chess.setPromotion(document.chessCtrl1.selPromo.selectedIndex);
+            chess.setFrameRate(Math.abs(Number(document.chessCtrl2.frameRateCtrl.value)) || 1000);
+            chess.setSide(document.chessCtrl2.selSide.selectedIndex);
+            chess.useKeyboard(document.chessCtrl2.KeybCtrl.checked);
+            chess.placeById("chessDesk");
+            document.chessCtrl1.plyDepthCtrl.value = "0";
+            chess.setView(1);
+            pressVwBtn(1);
+        }
+        </script>
+
+
+        <!--====== CSS ======-->
+        <style type="text/css">
+            hr {
+                width: 30%;
+                margin-top: 32px;
+                margin-bottom: 24px;
+            }
+
+            img.tbBtn {
+                cursor: pointer;
+                margin: 1px 3px 1px 3px;
+            }
+
+            #pgnTable {
+                width: auto;
+                height: auto;
+                margin-left: auto;
+                margin-right: auto;
+                border-collapse: collapse;
+                border: 0;
+            }
+
+                #pgnTable tr td {
+                    padding: 2px;
+                }
+
+            #chessDesk {
+                clear: both;
+                width: auto;
+                height: auto;
+                margin-top: 32px;
+                margin-bottom: 32px;
+            }
+
+            #chessToolBar {
+                width: 550px;
+                height: auto;
+                margin: 12px auto;
+                background-color: #969696;
+                -moz-box-shadow: inset 0 25px 27px -10px #BDBDBD;
+                -webkit-box-shadow: inset 0 25px 27px -10px #BDBDBD;
+                box-shadow: inset 0 25px 27px -10px #BDBDBD;
+                border-bottom: 1px solid #424242;
+                text-align: center;
+                padding: 6px 3px 2px 3px;
+            }
+
+            #setViewBtns {
+                width: auto;
+                float: left;
+            }
+
+                #setViewBtns span {
+                    margin: 0 3px;
+                    display: inline-block;
+                    font: 12px / 13px "Lucida Grande", sans-serif;
+                    text-shadow: rgba(255, 255, 255, 0.4) 0 1px;
+                    padding: 3px 6px;
+                    border: 1px solid rgba(0, 0, 0, 0.6);
+                    background-color: #969696;
+                    cursor: default;
+                    -moz-border-radius: 3px;
+                    -webkit-border-radius: 3px;
+                    border-radius: 3px;
+                    -moz-box-shadow: rgba(255, 255, 255, 0.4) 0 1px, inset 0 20px 20px -10px white;
+                    -webkit-box-shadow: rgba(255, 255, 255, 0.4) 0 1px, inset 0 20px 20px -10px white;
+                    box-shadow: rgba(255, 255, 255, 0.4) 0 1px, inset 0 20px 20px -10px white;
+                }
+
+                    #setViewBtns span.pressedBtn {
+                        background: #B5B5B5;
+                        -moz-box-shadow: inset rgba(0, 0, 0, 0.4) 0 -5px 12px, inset rgba(0, 0, 0, 1) 0 1px 3px, rgba(255, 255, 255, 0.4) 0 1px;
+                        -webkit-box-shadow: inset rgba(0, 0, 0, 0.4) 0 -5px 12px, inset rgba(0, 0, 0, 1) 0 1px 3px, rgba(255, 255, 255, 0.4) 0 1px;
+                        box-shadow: inset rgba(0, 0, 0, 0.4) 0 -5px 12px, inset rgba(0, 0, 0, 1) 0 1px 3px, rgba(255, 255, 255, 0.4) 0 1px;
+                    }
+        </style>
+    </head>
+<!--<body>-->
+<!--<div class="app">
+    <p id="deviceready" class="event">Connecting to Device</p>
+</div>-->
+    <body onload="initChess();">
+        <h1 style="color: royalblue; text-decoration: underline; text-align: center;"> Chess Game </h1>
+
+        <div class="app">
+            <p id="deviceready" class="event">Connecting to Device</p>
+        </div>
+
+        <!--Constellation-->
+        <p> <b>Etat :</b> <span id="state">Non connecte</span> a <i>Constellation</i> </p>
+
+
+
+        <!--En-tête-->
+        <form name="chessCtrl1" onsubmit="return(false);">
+
+            <p style="text-align:center;">[&nbsp;<input id="useAIAsk" name="useAI" type="checkbox" onclick="chess.useAI(this.checked);" checked /> <label for="useAIAsk">Against machine</label> | Promotion to: <select onchange="chess.setPromotion(this.selectedIndex);" name="selPromo"><option>Queen</option><option>Rook</option><option>Bishop</option><option>Knight</option></select> | <input type="button" name="strtBtn" value="New game" onclick="chess.organize(this.form.plyerClr1[1].checked);" /> (Human: <input type="radio" name="plyerClr1" id="white1" checked /> <label for="white1">white</label> <input type="radio" name="plyerClr1" id="black1" /> <label for="black1">black</label>) | Machine meditation level (press return to save): <input type="text" name="plyDepthCtrl" value="0" size="2" onkeypress=";if(event.keyCode===13&&chess.setPlyDepth(this.value)){alert('Ply depth setted.' + (Number(this.value) > 2 ? '\nAttention! The game could be very slow.' : ' Good game :)'));}" />&nbsp;]</p>
+
+            <div id="chessToolBar">
+                <div id="setViewBtns"><span id="viewBtn2" onclick="chess.setView(2);pressVwBtn(2);" onmousedown="return(false);">3D view</span><span id="viewBtn1" onclick="chess.setView(1);pressVwBtn(1);" onmousedown="return(false);">2D view</span><span id="viewBtn3" onclick="chess.setView(3);pressVwBtn(3);" onmousedown="return(false);">Both</span></div>
+                <img class="tbBtn" src="icons/skip-backward.png" title="" onclick="chess.backToStart();" />
+                <img class="tbBtn" src="icons/backward.png" title="" onclick="chess.navigate(-10, true);" />
+                <img class="tbBtn" src="icons/reverse-play.png" title="" onclick="chess.navigate(-1, true);" />
+                <img class="tbBtn" src="icons/stop.png" title="" onclick="chess.stopMotion();" />
+                <img class="tbBtn" src="icons/play.png" title="" onclick="chess.navigate(1, true);" />
+                <img class="tbBtn" src="icons/forward.png" title="" onclick="chess.navigate(10, true);" />
+                <img class="tbBtn" src="icons/skip-forward.png" title="" onclick="chess.returnToEnd();" />
+                <img class="tbBtn" src="icons/go-previous.png" title="" onclick="chess.navigate(-1);">
+                <img class="tbBtn" src="icons/go-next.png" title="" onclick="chess.navigate(1);" />
+                <img class="tbBtn" src="icons/help-hint.png" title="" onclick="chess.help();" />
+            </div>
+
+        </form>
+
+
+
+        <!--Jeu d'échec = carré central-->
+        <div id="chessDesk"></div>
+
+
+
+        <!--Bas de page-->
+        <form name="chessCtrl2" onsubmit="return(false);">
+            <p style="text-align:center;">[&nbsp;View side: <select onchange="chess.setSide(this.selectedIndex);" name="selSide"><option>White</option><option>Black</option><option selected>Human side</option></select> | <input id="useKeybAsk" name="KeybCtrl" type="checkbox" onclick="chess.useKeyboard(this.checked);" checked /> <label for="useKeybAsk">Enable keyboard</label> | Motion frame rate: <input type="text" name="frameRateCtrl" value="1000" size="5" onchange="var nMs=new Number(this.value);if(!isNaN(nMs)&&nMs>0){chess.setFrameRate(nMs);}" /> ms&nbsp;]</p>
+        </form>
+
+    </body>
+</html>
