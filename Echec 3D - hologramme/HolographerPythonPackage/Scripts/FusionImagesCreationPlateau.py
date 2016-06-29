@@ -22,7 +22,7 @@ import os
 
 #%%____________________________________________________________________________
 # Placement dans le répertoire
-os.chdir("C:\\Users\\Nicolas\\Documents\\Ecole\\ISEN\\NF - informatique\\Projet_fin_d'annee\\e-Holographer\\Echec 3D - hologramme\\Captures\\RendusPieces") # != sous windows et sous linux   #<Chemin_vers_le_bon_repertoire_a_inserer_ici>
+os.chdir("<Chemin_vers_le_bon_repertoire_a_inserer_ici>") # != sous windows et sous linux   
 
 
 
@@ -175,7 +175,7 @@ def trieListeImageAFusionnerSelonOrientation(listeImageAFusionner, orientation):
                     print("on modifie bien i et on rentre même dans le if indiceorientation qui va bien", i)
             #On traite ensemble les cas {left et right}
             else :
-                if ((orientation in nomImage) and (listeColonnes[i - 1] in nomImage)):
+                if ((orientation in nomImage) and (listeColonnes[i - 1] == nomImage[len(nomImage)-6])):
                     listeTriee += [nomImage]
                     print("on modifie bien i et on rentre même dans le if indiceorientation qui va bien", listeColonnes[i - 1])
             k += 1
@@ -207,50 +207,11 @@ def associeNumCaseACoordonnees(numeroCase):
     lettre = listeColonnes[numeroCase%10 - 1]
     
     #Associe à la dizaine le chiffre qui correspond
-    chiffre = str(numeroCase - numeroCase%10 - 1)
+    chiffre = str((numeroCase - numeroCase%10)//10 - 1)
 
     return(lettre+chiffre)
 
-    
-    
-#%%____________________________________________________________________________
-# Fonction qui produit les images initiales du plateau (16lignes)
-def imagesPlateauInitial(nomImage):
-    """Fonction qui crée le plateau dans l'état de départ et
-         enregistre les 4 images suivant les 4 points de vue
-                paramètre : 1 String = le nom de l'image a enregistrer (sans l'orientation devant)
-                retourne : 1 liste = liste des images à fusionner (triee)
-    """
-    #Begin
-    
-    #On associe un indice à l'orientation pour permettre par la suite un traitement unique pour tous les cas
-    listeOrientations = ["back", "front", "right", "left"]
-    
-    #Cree une liste contenant les lettres A B C... H dans l'ordre
-    listeColonnes = []
-    for i in range(ord('A'),ord('H')+1):
-        listeColonnes += [chr(i)]   
-    
-    #On commence a creer les images du plateau initial 
-    listeImages = ["WhiteRookA1.png", "WhiteKnightB1.png", "WhiteBishopC1.png", "WhiteQueenD1.png", "WhiteKingE1.png", "WhiteBishopF1.png", "WhiteKnightG1.png", "WhiteRookH1.png", "WhitePawnA2.png", "WhitePawnB2.png", "WhitePawnC2.png", "WhitePawnD2.png", "WhitePawnE2.png", "WhitePawnF2.png", "WhitePawnG2.png", "WhitePawnH2.png", "BlackRookA8.png", "BlackKnightB8.png", "BlackBishopC8.png", "BlackQueenD8.png", "BlackKingE8.png", "BlackBishopF8.png", "BlackKnightG8.png", "BlackRookH8.png", "BlackPawnA7.png", "BlackPawnB7.png", "BlackPawnC7.png", "BlackPawnD7.png", "BlackPawnE7.png", "BlackPawnF7.png", "BlackPawnG7.png", "BlackPawnH7.png"]
-    
-    #On renomme toutes les images avec l'orientation en debut
-    listeImagesAFusionner = []
-    listeImagesAFusionnerTriee = []
-    nombreImages = len(listeImages)
-    for i in range(4):
-        orientation = listeOrientations[i]
-        for j in range(nombreImages):
-            listeImagesAFusionner += [orientation + listeImages[j]] #produit le nom del'image sous la forme "frontWhiteRookA1" et l'insere dans la liste
-        listeImagesAFusionnerTriee += trieListeImageAFusionnerSelonOrientation(listeImagesAFusionner[nombreImages*i : (nombreImages*(i+1))], orientation)
-        imageFusionnee = superposePlusieursImages(listeImagesAFusionnerTriee[nombreImages*i : (nombreImages*(i+1))], orientation)
-        plt.imsave(orientation+nomImage+".png",imageFusionnee)
-    #return (listeImagesAFusionnerTriee)
 
-    return (listeImages)
-    #End
-
-    
     
 #%%____________________________________________________________________________
 # Fonction qui met à jour la liste des images à fusionner (20lignes)
@@ -268,8 +229,8 @@ def MAJListImage(listeImagesOld, caseDepart, caseArrivee):
     nombrePieces = len(listeImagesOld)
     
     #On initialise à vide la piece bougee et prise pour reconnaitre pouvoir retourner une erreur si aucune pice n'est bougee
-    pieceBougee, indicePieceBougee = "",0
-    piecePrise, indicePiecePrise = "",0
+    pieceBougee, indicePieceBougee = "",-1
+    piecePrise, indicePiecePrise = "",-1
     
     for i in range(nombrePieces) :
         if (coordonneesCaseDepart in listeImagesOld[i]):
@@ -288,10 +249,10 @@ def MAJListImage(listeImagesOld, caseDepart, caseArrivee):
     listeImagesOld[indicePieceBougee] = pieceBougee
     
     #On verifie si une piece est prise et on la supprime si oui
-    if (piecePrise, indicePiecePrise == "",0) :
-        listeImagesNew = listeImagesOld[: indicePiecePrise]+listeImagesOld[indicePiecePrise + 1 :]
-    else :
+    if (piecePrise == "" and indicePiecePrise == -1) :
         listeImagesNew = listeImagesOld
+    else :
+        listeImagesNew = listeImagesOld[: indicePiecePrise]+listeImagesOld[indicePiecePrise + 1 :]
     
     return (listeImagesNew)
     #End
@@ -424,9 +385,8 @@ def creePlateauHolographique(nomImage, listeImagesOld, caseDepart, caseArrivee):
     #Begin
     listeImagesNew = initialisationOuMAJImagesPlateau(nomImage, listeImagesOld, caseDepart, caseArrivee)    #cree les quatres images du plateau initial et la nomme : orientation+nomImage+.png
     
-    #Si il y a du changement on recree imageHolographique
-    if (listeImagesNew!=listeImagesOld) :
-        imageHolographique = regroupe4ImagesEn1(nomImage)       #regroupe les quatres images du nom "orientation+nomImage+.png" en une seule à projeter
+    #On recree imageHolographique
+    imageHolographique = regroupe4ImagesEn1(nomImage)       #regroupe les quatres images du nom "orientation+nomImage+.png" en une seule à projeter
     
     return (listeImagesNew)
     #End
