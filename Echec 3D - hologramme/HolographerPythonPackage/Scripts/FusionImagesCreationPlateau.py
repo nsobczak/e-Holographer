@@ -409,33 +409,9 @@ listeImagesNew = creePlateauHolographique('_02_Test',listeImagesInit,21,41)
 
 """
 #%%=============================================================================
-# Trucs à faire
+# Remarques
 
-- close image // fait
-
-- Dans superposePlusieursImages remplacer le paramètre <nom_de_limage_de_base> par un String correspondant au nom du point de vue : "front", "back", "left", "right"
-
-- trier images pour qu'elles soit dans le bon ordre : la pièce de devant ecrase celle de derrière mais pas l'inverse
-
-
-# A faire quand on aura les images
-
-- creer une fonction qui 
-    * prend en entree une liste de tuples de la forme (couleur_piece, type_de_piece, position_sur_le_plateau)
-    * sort la liste des images a fusionner triee
-    /!\ fin
-    
-- créer une fonction qui fait une image fusionnée pour les 4 points de vues : front, back, left et right
-    elle crée donc 4 images
-
-- créer une fonction qui crée le plateau dans l'état de départ et
-    enregistre l'image fusionnee
-    retourne la liste des images à fusionner (triee)
-
-- créer une fonction qui repart de la dernière position (celle de départ au début/par défaut) et met à jour la  position des pièces (une vient d'être déplacée)
-
-
-# On appelera les fonctions dans le jeu js aux moments où on en aura besoin
+# On appelera les fonctions dans les messages callback du package aux moments où on en aura besoin 
 
 #%%=============================================================================
 """
