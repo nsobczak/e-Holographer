@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Package xmlns="http://schemas.myconstellation.io/Constellation/1.8/PackageManifest"
+         Name="HolographerPythonPackage"
+         Version="1.0"
+         Author="Nicolas"
+         URL="https://github.com/nsobczak/e-Holographer"
+         Description="HolographerPythonPackage Copyright ©  2016"
+         EnableControlHub="false">
+  <Compatibility constellationVersion="1.8" dotNetTargetPlatform="net45">
+    <Platforms>
+      <!-- Disabling Windows support : -->
+      <Platform id="Win32NT" isCompliant="false" />
+    </Platforms>
+  </Compatibility>
+  <Settings>
+	<!-- My package settings --> 
+  </Settings>
+</Package>

@@ -1,0 +1,5 @@
+#script permettant d'afficher une vidéo en plein écran
+nohup vlc -f --video-title-timeout 0 --mouse-hide-timeout 0 /home/pi/Music/03\ Fear\ Circus.mp3 >/home/pi/Desktop/scriptsRpi/bash/logVideo &
+
+#permet d'écrire l'ID du processus dans le fichier "/home/pi/Desktop/scriptsRpi/bash/IdVideo"
+echo $! >/home/pi/Desktop/scriptsRpi/bash/IdVideo &

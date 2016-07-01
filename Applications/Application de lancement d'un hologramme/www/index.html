@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+
+        <!--Pour Cordova-->
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+        <!--Pour constellation-->
+        <script type="text/javascript" src="scripts/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery.signalR-2.2.0.min.js"></script>
+        <script type="text/javascript" src="scripts/Constellation-1.8.0.js"></script>
+        
+        <script type="text/javascript" src="scripts/index.js"></script>
+
+        <title>Push push</title>
+        <meta charset="utf-8" />
+
+    </head>
+
+    <body>
+        <div class="app">
+            <p id="deviceready" class="event">Connecting to Device</p>
+        </div>
+
+        <!--Constellation-->
+        <p> <b>Etat :</b> <span id="state">Non connecte</span> a <i>Constellation</i> </p>
+
+        <button id="demoPushVideo1">Push 1</button>
+        <button id="demoPushVideo2">Push 2</button>
+
+        <!--====== Javascript ======-->
+        <script type="text/javascript">
+
+		    // Constellation
+            var constellation = $.signalR.createConstellationConsumer("<URI du serveur Constellation>", "<Clé d'accès au serveur Constellation>", "FriendlyName");	// A remplacer pas les infos correspondant au serveur Constellation
+            
+
+            constellation.connection.stateChanged(function (change) {
+                if (change.newState === $.signalR.connectionState.connected) {
+                    $("#state").text("Connecte");
+                    constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] },
+                        'InfosConnection', '');
+                }
+                else {
+                    $("#state").text("Non connecte");
+                }
+            });
+
+            $("#demoPushVideo1").click(function () {
+                console.log('video1');
+                constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] }, 'CallVideo', 1);
+            });
+
+            $("#demoPushVideo2").click(function () {
+                console.log('video1');
+                constellation.server.sendMessage({ Scope: 'Package', Args: ['HolographerPythonPackage'] }, 'CallVideo', 2);
+            });
+
+            constellation.connection.start();
+
+        </script>
+
+    </body>
+</html>
