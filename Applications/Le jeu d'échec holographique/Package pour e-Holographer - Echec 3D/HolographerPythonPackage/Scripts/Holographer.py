@@ -2,9 +2,12 @@
 ### Package Holographer pour le e-Holographer ###
 #################################################
 
+#%%_______________________________________________________________________________________________
 import Constellation
-#import ScriptRpi
-#import FusionImagesCreationPlateau
+import FusionImagesCreationPlateau as FICP
+import ScriptRpi as SR
+
+listeDesPieces = []		# variable globale
 
 
 
@@ -19,18 +22,6 @@ def InfosConnection():
 	Constellation.WriteInfo("Holographer connecté à Constellation")
 
 
-
-##Début du jeu
-#@Constellation.MessageCallback()
-#def PlateauDeDepart():
-#	"Bouton qui génère le plateau de départ après la 1ere connexion"
-
-#	Constellation.WriteInfo( "Initialisation du plateau" )
-#	#PlateauDeDepart()
-#	Constellation.WriteInfo("Génération du plateau terminée")
-
-
-
 #En cours de jeu
 @Constellation.MessageCallback()
 def MAJPlateau(caseDeDepart, caseDarrivee):
@@ -38,30 +29,30 @@ def MAJPlateau(caseDeDepart, caseDarrivee):
 
 	Constellation.WriteInfo( "MAJ du plateau lancee | [case de depart = " + str(caseDeDepart) + " | case d'arrivee = " + str(caseDarrivee) + "]" )
 
-	deplacement = [caseDeDepart, caseDarrivee]
+	global listeDesPieces 
 
-	if (deplacement == [0, 0]):
+	if ((caseDeDepart == 0) and (caseDarrivee == 0)):
 		#Creation du plateau de départ quand on est en cours de jeu
 		Constellation.WriteInfo( "Initialisation du plateau" )
-		#PlateauDeDepart()
+		listeDesPieces = FICP.creePlateauHolographique(nomImage, [], 0, 0)
 		
-		##Fermeture d'une eventuelle image
-		#os.system( "kill " + str(IdProcI) )
+		#Fermeture d'une eventuelle image
+		os.system( "kill " + str(IdProcI) )
 
-		##Affichage de l'image
-		#IdProcI = showImage(cheminScriptImage)
+		#Affichage de l'image
+		IdProcI = SR.showImage(cheminScriptImage)
 
 		Constellation.WriteInfo("Génération du plateau terminée")
 
 	else:
-		##Mise A Jour (MAJ) de la position des pieces sur le plateau
-		#MAJPlateau(caseDeDepart, caseDarrivee)
+		#Mise A Jour (MAJ) de la position des pieces sur le plateau
+		listeDesPieces = FICP.creePlateauHolographique(nomImage, listeDesPieces, caseDeDepart, caseDarrivee)
 
-		##Fermeture d'une eventuelle image
-		#os.system( "kill " + str(IdProcI) )
+		#Fermeture d'une eventuelle image
+		os.system( "kill " + str(IdProcI) )
 
-		##Affichage de l'image
-		#IdProcI = showImage(cheminScriptImage)
+		#Affichage de l'image
+		IdProcI = SR.showImage(cheminScriptImage)
 		
 		Constellation.WriteInfo("Maj plateau terminée")
 
@@ -89,6 +80,7 @@ def FinDuJeu():
 
 #Lancé au démarrage du package
 def OnStart():
+	#State Object
 	Constellation.PushStateObject("Holographer", { "Sender": "Holographer" }, "Info", { "Device_Id": "RPi", "Etat du package":"lancé" })
 
 
@@ -97,7 +89,3 @@ def OnStart():
 #Démarrage du package
 
 Constellation.Start(OnStart);
-
-
-
-#%%____________________________________________________________________________________
