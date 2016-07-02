@@ -3,8 +3,8 @@
 #################################################
 
 import Constellation
-#import ScriptRpi
-#import FusionImagesCreationPlateau
+import ScriptRpi
+import FusionImagesCreationPlateau
 
 
 
@@ -43,25 +43,25 @@ def MAJPlateau(caseDeDepart, caseDarrivee):
 	if (deplacement == [0, 0]):
 		#Creation du plateau de départ quand on est en cours de jeu
 		Constellation.WriteInfo( "Initialisation du plateau" )
-		#PlateauDeDepart()
+		PlateauDeDepart()
 		
-		##Fermeture d'une eventuelle image
-		#os.system( "kill " + str(IdProcI) )
+		#Fermeture d'une eventuelle image
+		os.system( "kill " + str(IdProcI) )
 
-		##Affichage de l'image
-		#IdProcI = showImage(cheminScriptImage)
+		#Affichage de l'image
+		IdProcI = showImage(cheminScriptImage)
 
 		Constellation.WriteInfo("Génération du plateau terminée")
 
 	else:
-		##Mise A Jour (MAJ) de la position des pieces sur le plateau
-		#MAJPlateau(caseDeDepart, caseDarrivee)
+		#Mise A Jour (MAJ) de la position des pieces sur le plateau
+		MAJPlateau(caseDeDepart, caseDarrivee)
 
-		##Fermeture d'une eventuelle image
-		#os.system( "kill " + str(IdProcI) )
+		#Fermeture d'une eventuelle image
+		os.system( "kill " + str(IdProcI) )
 
-		##Affichage de l'image
-		#IdProcI = showImage(cheminScriptImage)
+		#Affichage de l'image
+		IdProcI = showImage(cheminScriptImage)
 		
 		Constellation.WriteInfo("Maj plateau terminée")
 
