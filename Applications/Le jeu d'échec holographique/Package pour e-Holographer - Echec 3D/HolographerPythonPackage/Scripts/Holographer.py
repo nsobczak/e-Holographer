@@ -8,8 +8,9 @@ import FusionImagesCreationPlateau as FICP
 import ScriptRpi as SR
 import os
 
-listeDesPieces = []		# variable globale
-
+# Initialisation variables globales
+listeDesPieces = []	
+IdProcI = 0 
 
 #%%______________________________________________________________________________
 #===== Message Callbacks =====
@@ -26,7 +27,9 @@ def InfosConnection():
 @Constellation.MessageCallback()
 def MAJPlateau(caseDeDepart, caseDarrivee):
 	"Bouton qui génère le plateau suivant à partir de 2 integer - mettre 0, 0 pour générer le plateau initial"
-
+	
+	global IdProcI
+	
 	Constellation.WriteInfo( "MAJ du plateau lancee | [case de depart = " + str(caseDeDepart) + " | case d'arrivee = " + str(caseDarrivee) + "]" )
 
 	global listeDesPieces 
@@ -37,7 +40,8 @@ def MAJPlateau(caseDeDepart, caseDarrivee):
 		listeDesPieces = FICP.creePlateauHolographique(nomImage, [], 0, 0)
 		
 		#Fermeture d'une eventuelle image
-		os.system( "kill " + str(IdProcI) )
+		if (IdProcI): 
+			os.system( "kill " + str(IdProcI) )
 
 		#Affichage de l'image
 		IdProcI = SR.showImage(cheminScriptImage)
@@ -49,7 +53,8 @@ def MAJPlateau(caseDeDepart, caseDarrivee):
 		listeDesPieces = FICP.creePlateauHolographique(nomImage, listeDesPieces, caseDeDepart, caseDarrivee)
 
 		#Fermeture d'une eventuelle image
-		os.system( "kill " + str(IdProcI) )
+		if (IdProcI):
+			os.system( "kill " + str(IdProcI) )
 
 		#Affichage de l'image
 		IdProcI = SR.showImage(cheminScriptImage)
