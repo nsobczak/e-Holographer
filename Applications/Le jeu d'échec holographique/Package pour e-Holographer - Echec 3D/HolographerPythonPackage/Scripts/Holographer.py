@@ -11,6 +11,10 @@ import os
 # Initialisation variables globales
 listeDesPieces = []	
 IdProcI = 0 
+cheminScriptVideo = "/home/pi/Desktop/scriptsRpi/bash/scriptVideo"
+cheminScriptImage = "/home/pi/Desktop/scriptsRpi/bash/scriptImage"
+cheminIdImage = "/home/pi/Desktop/scriptsRpi/bash/IdImage"
+cheminIdVideo = "/home/pi/Desktop/scriptsRpi/bash/IdVideo"
 
 #%%______________________________________________________________________________
 #===== Message Callbacks =====
@@ -33,6 +37,8 @@ def MAJPlateau(caseDeDepart, caseDarrivee):
 	Constellation.WriteInfo( "MAJ du plateau lancee | [case de depart = " + str(caseDeDepart) + " | case d'arrivee = " + str(caseDarrivee) + "]" )
 
 	global listeDesPieces 
+	global cheminIdImage
+        global cheminScriptImage
 
 	if ((caseDeDepart == 0) and (caseDarrivee == 0)):
 		#Creation du plateau de départ quand on est en cours de jeu
