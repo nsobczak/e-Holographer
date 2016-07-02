@@ -40,7 +40,7 @@
 
 
         // Constellation
-    constellation = $.signalR.createConstellationConsumer("<URI du serveur>", "<clé d'acces au serveur>", "<FriendlyName>");  // A remplacer par les informations du serveur auquel on veut se connecter
+        constellation = $.signalR.createConstellationConsumer("<URI du serveur>", "<clé d'acces au serveur>", "<FriendlyName>");  // A remplacer par les informations du serveur auquel on veut se connecter
         // ^ variable globale
 
         constellation.connection.stateChanged(function (change) {
