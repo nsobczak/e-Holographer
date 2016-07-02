@@ -6,9 +6,9 @@
 import Constellation
 import FusionImagesCreationPlateau as FICP
 import ScriptRpi as SR
+import os
 
 listeDesPieces = []		# variable globale
-
 
 
 #%%______________________________________________________________________________
@@ -25,7 +25,7 @@ def InfosConnection():
 #En cours de jeu
 @Constellation.MessageCallback()
 def MAJPlateau(caseDeDepart, caseDarrivee):
-	"Bouton qui génère le plateau suivant à partir de 2 integer"
+	"Bouton qui génère le plateau suivant à partir de 2 integer - mettre 0, 0 pour générer le plateau initial"
 
 	Constellation.WriteInfo( "MAJ du plateau lancee | [case de depart = " + str(caseDeDepart) + " | case d'arrivee = " + str(caseDarrivee) + "]" )
 
