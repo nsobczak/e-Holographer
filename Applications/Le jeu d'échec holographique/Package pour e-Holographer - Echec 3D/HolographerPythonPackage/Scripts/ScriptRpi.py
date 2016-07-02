@@ -25,7 +25,9 @@ def showImage(cheminScriptImage):
                 paramètre : 1 String = le chemin d'accès au script
                 retourne : 1 int = l'id du processus exécuté
         """
-
+        global cheminIdImage
+        global cheminScriptImage
+        
         #ouverture du processus
         os.system(cheminScriptImage)
 
@@ -33,9 +35,9 @@ def showImage(cheminScriptImage):
         IdentifiantProcessustxt = open(cheminIdImage)
         IdProcI = IdentifiantProcessustxt.read()
         IdentifiantProcessustxt.close()
-        print IdProcI
+        print(IdProcI)
         #renvoie l'ID du processus
-        return IdProcI
+        return(IdProcI)
 
 
 
@@ -45,6 +47,8 @@ def showVideo(cheminScriptVideo):
                 paramètre : 1 String = le chemin d'accès au script
                 retourne : 1 int = l'id du processus exécuté
         """
+        global cheminIdVideo
+        global cheminScriptVideo
         
         #ouverture du processus
         os.system(cheminScriptVideo)
@@ -53,9 +57,9 @@ def showVideo(cheminScriptVideo):
         IdentifiantProcessustxt = open(cheminIdVideo)
         IdProcV = IdentifiantProcessustxt.read()
         IdentifiantProcessustxt.close()
-        print IdProcV
+        print(IdProcV)
         #renvoie l'ID du processus
-        return IdProcV
+        return(IdProcV)
 
 
 
