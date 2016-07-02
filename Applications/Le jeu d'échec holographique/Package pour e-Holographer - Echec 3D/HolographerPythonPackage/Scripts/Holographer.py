@@ -34,16 +34,14 @@ def InfosConnection():
 #En cours de jeu
 @Constellation.MessageCallback()
 def MAJPlateau(caseDeDepart, caseDarrivee):
-	"Bouton qui génère le plateau suivant à partir de 2 integer"
+	"Bouton qui génère le plateau suivant à partir de 2 integer - mettre 0, 0 pour générer le plateau initial"
 
 	Constellation.WriteInfo( "MAJ du plateau lancee | [case de depart = " + str(caseDeDepart) + " | case d'arrivee = " + str(caseDarrivee) + "]" )
 
-	deplacement = [caseDeDepart, caseDarrivee]
-
-	if (deplacement == [0, 0]):
+	if (caseDeDepart == 0 and caseDarrivee == 0):
 		#Creation du plateau de départ quand on est en cours de jeu
 		Constellation.WriteInfo( "Initialisation du plateau" )
-		PlateauDeDepart()
+		MAJPlateau(0, 0)
 		
 		#Fermeture d'une eventuelle image
 		os.system( "kill " + str(IdProcI) )
