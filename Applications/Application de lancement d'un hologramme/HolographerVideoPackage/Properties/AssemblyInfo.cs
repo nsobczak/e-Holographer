@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LancementHologramme")]
-[assembly: AssemblyDescription("Application de lancement de vidéo sous windows avec WMediaPlayer")]
-[assembly: AssemblyConfiguration("A déployer sur windows")]
+[assembly: AssemblyTitle("HolographerVideoPackage")]
+[assembly: AssemblyDescription("Package permettant de lancer des vidéos")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LancementHologramme")]
+[assembly: AssemblyProduct("HolographerVideoPackage")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("412af9ed-e686-45d0-bcf4-ad924c22c862")]
+[assembly: Guid("b36612ef-126f-448c-9712-408677698508")]
 
 // Version information for an assembly consists of the following four values:
 //

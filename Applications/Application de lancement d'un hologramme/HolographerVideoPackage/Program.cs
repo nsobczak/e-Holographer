@@ -1,4 +1,4 @@
-﻿namespace LancementHologramme
+﻿namespace HolographerVideoPackage
 {
     using Constellation.Package;
     using Constellation.PythonProxy;
