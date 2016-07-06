@@ -1,3 +1,4 @@
-Il s'agit d'une application Androïd créé avec Cordova.
+Application de contrôle. Il s'agit d'une application Androïd créé avec Cordova.
 
+Les scripts se trouvent dans le dossier "www"
 L'apk se trouve dans platforms/android/build/outputs/apk
